@@ -1,1 +1,2 @@
 tests/outputs/head_stabilization
+tests/outputs/optomotor_connectome/baseline_response/*.pkl
