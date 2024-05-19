@@ -1,29 +1,15 @@
 import numpy as np
 
-contact_sensor_placements = [
-    f"{leg}{segment}"
-    for leg in ["LF", "LM", "LH", "RF", "RM", "RH"]
-    for segment in ["Tibia", "Tarsus1", "Tarsus2", "Tarsus3", "Tarsus4", "Tarsus5"]
-]
+def immobile_behavior():
+    return np.array([0, 0])
 
-# fmt: off
-cells = [
-    "T1", "T2", "T2a", "T3", "T4a", "T4b", "T4c", "T4d", "T5a", "T5b", "T5c", "T5d",
-    "Tm1", "Tm2", "Tm3", "Tm4", "Tm5Y", "Tm5a", "Tm5b", "Tm5c", "Tm9", "Tm16", "Tm20",
-    "Tm28", "Tm30", "TmY3", "TmY4", "TmY5a", "TmY9", "TmY10", "TmY13", "TmY14", "TmY15",
-    "TmY18"
-]
-# fmt: on
-
-def get_eye_weighted_average(
-    neural_activity
+def simple_std_t4_behavior(
+    nn_activities,
+    sim
 ):
-    print("not implemented yet")
+    # Array that decides the direction that the fly will turn
+    turn_bias = np.array([0, 0])
 
-def simple_std_behavior(
-    nn_activities
-):
-    turn_bias_base = np.array([0, 0])
     # Look at activities of the relevent neurons
     t4a_activity_eye_one = sim.retina_mapper.flyvis_to_flygym(nn_activities["T4a"][:][0])
     t4a_activity_eye_one = sim.retina_mapper.flyvis_to_flygym(nn_activities["T4a"][:][1])
@@ -37,6 +23,8 @@ def simple_std_behavior(
     t4b_seddev_eye_two = np.std(t4b_activity_eye_two)
     t4a_mean = (t4a_seddev_eye_one + t4a_seddev_eye_two) / 2.0
     t4b_mean = (t4b_seddev_eye_one + t4b_seddev_eye_two) / 2.0
+
+    # Here the turning bias is not adaptative : if a threshold is crossed, the fly turns at a constant rate
     if(t4a_mean > t4b_mean):
         # Turn left
         turn_bias[0] = -1
@@ -47,11 +35,14 @@ def simple_std_behavior(
         turn_bias[1] = -1
     return turn_bias
     
-def adaptaticve_std_behavior(
+def adaptative_std_t4_behavior(
     nn_activities,
     sim
 ):
+    # Array that decides the direction that the fly will turn. It has values equal to 3 because the turning coefficient
+    # is always small
     turn_bias_base = np.array([-3, 3])
+
     # Look at activities of the relevent neurons
     t4a_activity_eye_one = sim.retina_mapper.flyvis_to_flygym(nn_activities["T4a"][:][0])
     t4a_activity_eye_one = sim.retina_mapper.flyvis_to_flygym(nn_activities["T4a"][:][1])
@@ -65,15 +56,23 @@ def adaptaticve_std_behavior(
     t4b_stddev_eye_two = np.std(t4b_activity_eye_two)
     t4a_stddev_mean = (t4a_stddev_eye_one + t4a_stddev_eye_two) / 2.0
     t4b_stddev_mean = (t4b_stddev_eye_one + t4b_stddev_eye_two) / 2.0
+
+    # Compute a turinig coefficient from the standard deviations and deduce the turning bias
     turning_coeff = t4a_stddev_mean - t4b_stddev_mean
     turn_bias = turn_bias_base * turning_coeff
     return turn_bias
 
-def realistic_behavior(
+def realistic_proportional_behavior(
     nn_activities,
     sim
 ):
+    # Array that decides the direction that the fly will turn. The fly will turn right if the 
+    # optomotor_output is greater than one
     turn_bias_base = np.array([1, -1])
+
+    # This value, similar to the Kp in a P controller, is empirically determined through an iterative process:
+    # it normalizes the output from the neurons and makes sure it can be exploited to compute the turning bias
+    Kp = 180000.0
     
     # Relevant neurons with ommatidiae output from left eye
     # We take the absolute value because they can be polarized or depolarized
@@ -110,12 +109,71 @@ def realistic_behavior(
     t4a_activity = (t4a_activity_eye_one + t4a_activity_eye_two) / 2.0
     t4b_activity = (t4b_activity_eye_one + t4b_activity_eye_two) / 2.0
 
-    # Next we combine the outputs of different neurons to compute the optomotor response. The wey we do it is inspired
+    # Next we combine the outputs of different neurons to compute the optomotor response. The way we do it is inspired
     # by connectomid data
     t5_coefficient = np.sum(tm1_activity + tm2_activity + tm4_activity + tm9_activity)
     t4_coefficient = np.sum(tm3_activity)
     t5_difference = np.sum(t5b_activity - t5a_activity)
     t4_difference = np.sum(t4b_activity - t4a_activity)
     optomotor_output = t5_coefficient * t5_difference + t4_coefficient * t4_difference
-    #print(optomotor_output)
-    return turn_bias_base * optomotor_output / 180000.0
+    return turn_bias_base * optomotor_output / Kp
+
+def neuron_average_std(nn_activities, neuron, sim):
+    
+    # We get the neuron activities
+    activity_e0 = sim.retina_mapper.flyvis_to_flygym(nn_activities[neuron][:][0])
+    activity_e1 = sim.retina_mapper.flyvis_to_flygym(nn_activities[neuron][:][1])
+
+    # We compute the standard deviation of the neuron per eye, for all ommatidia
+    std_e0 = np.std(activity_e0)
+    std_e1 = np.std(activity_e1)
+    std = (std_e0 + std_e1) / 2.0
+    
+    # We return the average stardard deviation for both eyes, for all ommatidia
+    return std
+
+def simple_std_t45_behavior(nn_activities, sim):
+    turn_bias_base = np.array([-1.5, 1.5])
+    t4a_std = neuron_average_std(nn_activities, "T4a", sim)
+    t4b_std = neuron_average_std(nn_activities, "T4b", sim)
+    t5a_std = neuron_average_std(nn_activities, "T5a", sim)
+    t5b_std = neuron_average_std(nn_activities, "T5b", sim)
+    
+    t4_std = t4a_std - t4b_std
+    t5_std = t5a_std - t5b_std
+
+    t_std = t4_std + t5_std
+
+    noise_threshold = 0.1
+
+    if np.abs(t_std) < noise_threshold:
+        t_std = 0
+
+    t_std = np.sign(t_std)
+    
+    turn_bias = turn_bias_base * t_std
+    
+    return turn_bias
+
+def adaptative_std_t45_behavior(nn_activities, sim):
+    # Array that decides the direction that the fly will turn. It has values equal to 4 because the turning coefficient
+    # is always small
+    turn_bias_base = np.array([-4, 4])
+
+    t4a_std = neuron_average_std(nn_activities, "T4a", sim)
+    t4b_std = neuron_average_std(nn_activities, "T4b", sim)
+    t5a_std = neuron_average_std(nn_activities, "T5a", sim)
+    t5b_std = neuron_average_std(nn_activities, "T5b", sim)
+    
+    t4_std = t4a_std - t4b_std
+    t5_std = t5a_std - t5b_std
+
+    t_std = t4_std + t5_std
+
+    noise_threshold = 0.1
+
+    if np.abs(t_std) < noise_threshold:
+        t_std = 0
+    
+    turn_bias = turn_bias_base * t_std
+    return turn_bias
