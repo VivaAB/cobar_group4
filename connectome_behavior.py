@@ -59,9 +59,9 @@ def std_behavior(
         t4_coeff = tm3_activity
         t5_coeff = tm1_activity + tm2_activity + tm4_activity + tm9_activity
         Kp = 5
-
+    
     t_std = Kp * (t4_coeff * t4_std + t5_coeff * t5_std)
-
+    
     noise_threshold = 0.05
 
     if (np.abs(t_std) < noise_threshold):
