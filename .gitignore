@@ -1,2 +1,2 @@
-tests/outputs/optomotor_connectome/baseline_response/*.pkl
-tests/outputs/optomotor_connectome/baseline_response/dev/*
+outputs/*.pkl
+outputs/dev/*
