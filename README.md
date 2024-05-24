@@ -5,7 +5,7 @@ This repository contains the code submitted for the "BIOEN-456: Controlling beha
 Here are the contents of the different files and folders:
 
 - connectome_arenas.py: contains the code of the implementation of the two arenas that are used. One for the optomotor visual stimulus, the other for the looming visual stimulus;
-- connectome_behavior.py: contains the code of the controller that dictates the movements of the fly in response to the optomotor visual stimulus.
+- connectome_behavior.py: contains the code of the controller that dictates the movements of the fly in response to the optomotor visual stimulus;
 - Connectome_with_arena.ipynb: contains the code necessary to generate all the simulations and .pkl files used for our miniproject;
 - pkl_visualization.ipynb: contains the code needed to generate the plots seen in our report;
 - outputs: contains the videos of all our simulations.
@@ -15,7 +15,7 @@ It is important to note that the __only files that should be run directly are th
 ## Submited vides and naming conventions
 In our submission, we modified the names of the generated vides to make them easier to understand. In the "outputs" folder here, their names follow a different naming convention. Here is the structure of the names:
 
-[A]_terrain_[A]_speed_[A].mp3
+[A]_terrain_[B]_speed_[C].mp3
 
 where:
 
