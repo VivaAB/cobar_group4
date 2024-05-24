@@ -6,6 +6,7 @@ This repository contains the code submitted for the "BIOEN-456: Controlling beha
 ## Contents of the repository
 Here are the contents of the different files and folders:
 
+- COBAR_Project_group_4.pdf : our report, a copy of the report we submitted on moodle;
 - connectome_arenas.py: contains the code of the implementation of the two arenas that are used. One for the optomotor visual stimulus, the other for the looming visual stimulus;
 - connectome_behavior.py: contains the code of the controller that dictates the movements of the fly in response to the optomotor visual stimulus;
 - Connectome_with_arena.ipynb: contains the code necessary to generate all the simulations and .pkl files used for our miniproject;
