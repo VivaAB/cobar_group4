@@ -11,7 +11,8 @@ Here are the contents of the different files and folders:
 - connectome_behavior.py: contains the code of the controller that dictates the movements of the fly in response to the optomotor visual stimulus;
 - Connectome_with_arena.ipynb: contains the code necessary to generate all the simulations and .pkl files used for our miniproject;
 - pkl_visualization.ipynb: contains the code needed to generate the plots seen in our report;
-- outputs: contains the videos of all our simulations.
+- outputs: contains the videos of all our simulations;
+- supplementary videos: contains the supplementary videos for our report.
 
 It is important to note that the __only files that should be run directly are the jupyter notebooks.__
 
