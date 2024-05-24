@@ -23,12 +23,12 @@ class OptomotorTerrain(FlatTerrain):
         self.curr_time = 0
         
         if not dark:
-            palette1 =(0,0,0,0)
+            palette1=(0.5,0.5,0.5,1)
         else:
-            palette1 = (0,0,0,1)
+            palette1=(0,0,0,1)
         
         if not light:
-            palette2=(0,0,0,0)
+            palette2=(0.5,0.5,0.5,1)
         else:
             palette2= (1,1,1,1)
             
