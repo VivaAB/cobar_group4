@@ -1,4 +1,6 @@
-# Mini project: Explore how a connectome-constrained visual system network (Lappalainen et al.,bioRxiv 2023) can be used for a visuomotor task like optomotor turning from Week 4
+# Optomotor Turning in NeuroMechFly: a Connectome-Constrained Approach
+
+### Mini project: Explore how a connectome-constrained visual system network (Lappalainen et al.,bioRxiv 2023) can be used for a visuomotor task like optomotor turning from Week 4
 This repository contains the code submitted for the "BIOEN-456: Controlling behavior in animals and robots" course. It is written by the group 4, comprised of Viva Berlenghi (324410), Florian David (375252) and Nils Antonovitch (310410).
 
 ## Contents of the repository
