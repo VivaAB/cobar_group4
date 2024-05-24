@@ -14,7 +14,7 @@ Here are the contents of the different files and folders:
 
 It is important to note that the __only files that should be run directly are the jupyter notebooks.__
 
-## Submited vides and naming conventions
+## Submited videos and naming conventions
 In our submission, we modified the names of the generated vides to make them easier to understand. In the "outputs" folder here, their names follow a different naming convention. Here is the structure of the names:
 
 [A]_terrain_[B]_speed_[C].mp3
