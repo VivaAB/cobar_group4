@@ -12,7 +12,7 @@ Here are the contents of the different files and folders:
 - Connectome_with_arena.ipynb: contains the code necessary to generate all the simulations and .pkl files used for our miniproject;
 - pkl_visualization.ipynb: contains the code needed to generate the plots seen in our report;
 - outputs: contains the videos of all our simulations;
-- supplementary videos: contains the supplementary videos for our report.
+- supplementary videos: contains the supplementary videos referenced in the report (most relevant simulations, from V1 to V11).
 
 It is important to note that the __only files that should be run directly are the jupyter notebooks.__
 
